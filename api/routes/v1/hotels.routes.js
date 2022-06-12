@@ -11,6 +11,13 @@ const {
 
 const routes = express.Router();
 
+
+//GET City Count
+routes.get('/countByCity', countByCity);
+//GET ALL Hotel
+// routes.get('/countByType', countByType);
+
+
 //GET ALL Hotel
 routes.get('/', getAllHotel);
 
@@ -26,12 +33,7 @@ routes.put('/:hotelId', verifyToken, verifyAdmin, updateHotel);
 //Delete Hotel
 routes.delete('/:hotelId', verifyToken, verifyAdmin, deleteHotel);
 
-//GET City Count
-routes.get('/countByCity', countByCity);
-//GET ALL Hotel
-routes.get('/countByType', countByType);
-//GET ALL Hotel
-routes.get('/', getAllHotel);
+
 
 
 module.exports = routes;

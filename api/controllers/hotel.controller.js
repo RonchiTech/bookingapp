@@ -74,16 +74,18 @@ async function getHotel(req, res, next) {
 
 async function countByCity(req, res, next) {
   const cities = req.query.cities.split(',');
+  console.log('Cities', cities);
   try {
     const list = await Promise.all(
       cities.map((city) => {
-        return Hotel.countDocuments({ city });
+        return Hotel.countDocuments({ city: city });
       })
     );
-    if (!hotel) {
-      return next(createError(404, 'Hotel Not Found!'));
-    }
-    return res.status(200).json({ message: 'Hotel found!', hotel });
+    console.log('list', list);
+    // if (!hotel) {
+    //   return next(createError(404, 'Hotel Not Found!'));
+    // }
+    return res.status(200).json({ hotelCount: list });
   } catch (err) {
     console.log(err);
     next(err);
