@@ -6,7 +6,7 @@ const HotelSchema = new Schema({
     type: String,
     required: true,
   },
-  hotelType: {
+  type: {
     type: String,
     required: true,
   },

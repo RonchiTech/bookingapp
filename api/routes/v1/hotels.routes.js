@@ -7,6 +7,7 @@ const {
   getHotel,
   getAllHotel,
   countByCity,
+  countByType,
 } = require('../../controllers/hotel.controller');
 
 const routes = express.Router();
@@ -14,8 +15,9 @@ const routes = express.Router();
 
 //GET City Count
 routes.get('/countByCity', countByCity);
-//GET ALL Hotel
-// routes.get('/countByType', countByType);
+
+// GET Property Count
+routes.get('/countByType', countByType);
 
 
 //GET ALL Hotel
