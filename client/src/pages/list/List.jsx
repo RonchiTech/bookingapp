@@ -1,19 +1,37 @@
-import "./list.css";
-import Navbar from "../../components/navbar/Navbar";
-import Header from "../../components/header/Header";
-import { useLocation } from "react-router-dom";
-import { useState } from "react";
-import { format } from "date-fns";
-import { DateRange } from "react-date-range";
-import SearchItem from "../../components/searchItem/SearchItem";
+import { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
+import { DateRange } from 'react-date-range';
+import { format } from 'date-fns';
+import Navbar from '../../components/navbar/Navbar';
+import Header from '../../components/header/Header';
+import SearchItem from '../../components/searchItem/SearchItem';
+import './list.css';
 
 const List = () => {
   const location = useLocation();
-  const [destination, setDestination] = useState(location.state.destination);
-  const [date, setDate] = useState(location.state.date);
+  const [destination, setDestination] = useState(
+    location?.state?.destination ?? ''
+  );
+  const [date, setDate] = useState(
+    location?.state?.date ?? [
+      {
+        startDate: new Date(),
+        endDate: new Date(),
+        key: 'selection',
+      },
+    ]
+  );
   const [openDate, setOpenDate] = useState(false);
-  const [options, setOptions] = useState(location.state.options);
-
+  const [options, setOptions] = useState(
+    location?.state?.options ?? {
+      adult: 1,
+      children: 0,
+      room: 1,
+    }
+  );
+  useEffect(() => {
+    console.log(location);
+  }, [location]);
   return (
     <div>
       <Navbar />
@@ -30,8 +48,8 @@ const List = () => {
               <label>Check-in Date</label>
               <span onClick={() => setOpenDate(!openDate)}>{`${format(
                 date[0].startDate,
-                "MM/dd/yyyy"
-              )} to ${format(date[0].endDate, "MM/dd/yyyy")}`}</span>
+                'MM/dd/yyyy'
+              )} to ${format(date[0].endDate, 'MM/dd/yyyy')}`}</span>
               {openDate && (
                 <DateRange
                   onChange={(item) => setDate([item.selection])}

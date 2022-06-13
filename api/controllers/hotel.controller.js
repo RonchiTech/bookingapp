@@ -2,9 +2,13 @@ const Hotel = require('../models/hotel.model');
 const { createError } = require('../utils/error');
 
 async function getAllHotel(req, res, next) {
+  const { min, max, limit, ...others } = req.query;
   try {
-    const hotels = await Hotel.find();
-    if (!hotels) {
+    const hotels = await Hotel.find({
+      ...others,
+      cheapestPrice: { $gte: min || 1, $lte: max || 9999},
+    }).limit(limit);
+    if (!hotels || !hotels.length) {
       return next(createError(404, 'No Hotels Found!'));
       // return res.status(404).json({ message: 'Hotels not found' });
     }
@@ -88,7 +92,6 @@ async function countByCity(req, res, next) {
         return { city: city, count: count };
       })
     );
-    console.log('newList', newList);
     // if (!hotel) {
     //   return next(createError(404, 'Hotel Not Found!'));
     // }
@@ -106,7 +109,7 @@ async function countByType(req, res, next) {
     const resortCount = await Hotel.countDocuments({ type: 'resort' });
     const villaCount = await Hotel.countDocuments({ type: 'villa' });
     const cabinCount = await Hotel.countDocuments({ type: 'cabin' });
-    
+
     return res.status(200).json([
       { type: 'hotels', count: hotelCount },
       { type: 'apartments', count: apartmentCount },
