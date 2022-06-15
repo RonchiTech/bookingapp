@@ -3,6 +3,7 @@ const { createError } = require('../utils/error');
 
 async function getAllHotel(req, res, next) {
   const { min, max, limit, ...others } = req.query;
+  console.log(req.query);
   try {
     const hotels = await Hotel.find({
       ...others,
@@ -10,7 +11,7 @@ async function getAllHotel(req, res, next) {
     }).limit(limit);
     if (!hotels || !hotels.length) {
       return next(createError(404, 'No Hotels Found!'));
-      // return res.status(404).json({ message: 'Hotels not found' });
+    // return res.status(200).json({ message: 'No Hotels found!', hotels });
     }
     return res.status(200).json({ message: 'Hotesl found!', hotels });
   } catch (err) {
