@@ -18,9 +18,9 @@ const FeaturedProperties = () => {
           <h2>Loading...</h2>
         ) : (
           data.hotels &&
-          data.hotels.map(({ id, name, city, cheapestPrice, rating, photos }, idx) => {
+          data.hotels.map(({ _id, name, city, cheapestPrice, rating, photos }, idx) => {
             return (
-              <div className="fpItem" key={id}>
+              <div className="fpItem" key={_id}>
                 <img src={imageArray[idx]} alt="" className="fpImg" />
                 <span className="fpName">{name}</span>
                 <span className="fpCity">{city}</span>

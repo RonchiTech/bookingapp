@@ -15,9 +15,6 @@ const Featured = () => {
   const [data, loading, error] = useFetch(
     'http://localhost:3000/api/v1/hotels/countByCity?cities=berlin,london,manila'
   );
-  useEffect(() => {
-    console.log(data, loading, error);
-  }, [data, loading, error]);
 
   return (
     <div className="featured">

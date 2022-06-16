@@ -20,9 +20,7 @@ const PropertyList = () => {
   const [data, loading, error] = useFetch(
     'http://localhost:3000/api/v1/hotels/countByType'
   );
-  useEffect(() => {
-    console.log(data);
-  },[data]);
+
   return (
     <div className="pList">
       {loading ? (
