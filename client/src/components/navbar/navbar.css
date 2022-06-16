@@ -4,7 +4,7 @@ a {
 }
 .navbar {
   height: 50px;
-  background-color: #003580;
+  background-color: var(--theme-color);
   display: flex;
   justify-content: center;
 }
@@ -26,5 +26,6 @@ a {
   border: none;
   padding: 5px 10px;
   cursor: pointer;
-  color: #003580;
+  background-color: var(--button-color);
+  color: var(--theme-color);
 }
