@@ -51,7 +51,7 @@ const   Header = ({ type }) => {
     <div className="header">
       <div
         className={
-          type === "list" ? "headerContainer listMode" : "headerContainer"
+          type === 'list' ? 'headerContainer listMode' : 'headerContainer'
         }
       >
         <div className="headerList">
@@ -76,14 +76,12 @@ const   Header = ({ type }) => {
             <span>Airport taxis</span>
           </div>
         </div>
-        {type !== "list" && (
+        {type !== 'list' && (
           <>
-            <h1 className="headerTitle">
-              A lifetime of discounts? It's Genius.
-            </h1>
+            <h1 className="headerTitle">Make your trip enjoyable</h1>
             <p className="headerDesc">
-              Get rewarded for your travels – unlock instant savings of 10% or
-              more with a free Lamabooking account
+              You’ll fall in love with the home, but these destinations really
+              steal our ❤️
             </p>
             <button className="headerBtn">Sign in / Register</button>
             <div className="headerSearch">
@@ -101,9 +99,9 @@ const   Header = ({ type }) => {
                 <span
                   onClick={() => setOpenDate(!openDate)}
                   className="headerSearchText"
-                >{`${format(date[0].startDate, "MM/dd/yyyy")} to ${format(
+                >{`${format(date[0].startDate, 'MM/dd/yyyy')} to ${format(
                   date[0].endDate,
-                  "MM/dd/yyyy"
+                  'MM/dd/yyyy'
                 )}`}</span>
                 {openDate && (
                   <DateRange
@@ -130,7 +128,7 @@ const   Header = ({ type }) => {
                         <button
                           disabled={options.adult <= 1}
                           className="optionCounterButton"
-                          onClick={() => handleOption("adult", "d")}
+                          onClick={() => handleOption('adult', 'd')}
                         >
                           -
                         </button>
@@ -139,7 +137,7 @@ const   Header = ({ type }) => {
                         </span>
                         <button
                           className="optionCounterButton"
-                          onClick={() => handleOption("adult", "i")}
+                          onClick={() => handleOption('adult', 'i')}
                         >
                           +
                         </button>
@@ -151,7 +149,7 @@ const   Header = ({ type }) => {
                         <button
                           disabled={options.children <= 0}
                           className="optionCounterButton"
-                          onClick={() => handleOption("children", "d")}
+                          onClick={() => handleOption('children', 'd')}
                         >
                           -
                         </button>
@@ -160,7 +158,7 @@ const   Header = ({ type }) => {
                         </span>
                         <button
                           className="optionCounterButton"
-                          onClick={() => handleOption("children", "i")}
+                          onClick={() => handleOption('children', 'i')}
                         >
                           +
                         </button>
@@ -172,7 +170,7 @@ const   Header = ({ type }) => {
                         <button
                           disabled={options.room <= 1}
                           className="optionCounterButton"
-                          onClick={() => handleOption("room", "d")}
+                          onClick={() => handleOption('room', 'd')}
                         >
                           -
                         </button>
@@ -181,7 +179,7 @@ const   Header = ({ type }) => {
                         </span>
                         <button
                           className="optionCounterButton"
-                          onClick={() => handleOption("room", "i")}
+                          onClick={() => handleOption('room', 'i')}
                         >
                           +
                         </button>
