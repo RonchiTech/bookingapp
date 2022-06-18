@@ -1,5 +1,5 @@
 import { useContext, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 
 import { format } from 'date-fns';
 import { SearchContext } from '../../context/searchContext';
@@ -20,6 +20,7 @@ import { DateRange } from 'react-date-range';
 import './header.css';
 import 'react-date-range/dist/styles.css'; // main css file
 import 'react-date-range/dist/theme/default.css'; // theme css file
+import { AuthContext } from '../../context/authContext';
 
 const Header = ({ type }) => {
   const { dispatch } = useContext(SearchContext);
@@ -40,7 +41,7 @@ const Header = ({ type }) => {
   });
 
   const navigate = useNavigate();
-
+  const { user } = useContext(AuthContext);
   const handleOption = (name, operation) => {
     setOptions((prev) => {
       return {
@@ -94,7 +95,13 @@ const Header = ({ type }) => {
               You’ll fall in love with the home, but these destinations really
               steal our ❤️
             </p>
-            <button className="headerBtn">Sign in / Register</button>
+
+            {!user && (
+              <Link to="/">
+                <button className="headerBtn">Sign in / Register</button>
+              </Link>
+            )}
+
             <div className="headerSearch">
               <div className="headerSearchItem">
                 <FontAwesomeIcon icon={faBed} className="headerIcon" />

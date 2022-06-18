@@ -28,7 +28,7 @@ async function login(req, res, next) {
   try {
     const user = await User.findOne({ username });
     if (!user) {
-      return next(createError(400, 'Invalid Username or Password!'));
+      return next(createError(400, 'No User Found!'));
     }
 
     const isPasswordCorrect = await bcrypt.compare(password, user.password);

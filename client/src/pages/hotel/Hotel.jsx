@@ -17,7 +17,7 @@ import MailList from '../../components/mailList/MailList';
 import Footer from '../../components/footer/Footer';
 
 import './hotel.css';
-import { useEffect } from 'react';
+
 
 const Hotel = () => {
   const location = useLocation();
