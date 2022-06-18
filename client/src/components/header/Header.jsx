@@ -1,3 +1,11 @@
+import { useContext, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+
+import { format } from 'date-fns';
+import { SearchContext } from '../../context/searchContext';
+
+import { ACTION_TYPES } from '../../context/searchContext';
+
 import {
   faBed,
   faCalendarDays,
@@ -5,24 +13,23 @@ import {
   faPerson,
   faPlane,
   faTaxi,
-} from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import "./header.css";
-import { DateRange } from "react-date-range";
-import { useState } from "react";
-import "react-date-range/dist/styles.css"; // main css file
-import "react-date-range/dist/theme/default.css"; // theme css file
-import { format } from "date-fns";
-import { useNavigate } from "react-router-dom";
+} from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { DateRange } from 'react-date-range';
 
-const   Header = ({ type }) => {
-  const [destination, setDestination] = useState("");
+import './header.css';
+import 'react-date-range/dist/styles.css'; // main css file
+import 'react-date-range/dist/theme/default.css'; // theme css file
+
+const Header = ({ type }) => {
+  const { dispatch } = useContext(SearchContext);
+  const [destination, setDestination] = useState('');
   const [openDate, setOpenDate] = useState(false);
-  const [date, setDate] = useState([
+  const [dates, setDates] = useState([
     {
       startDate: new Date(),
       endDate: new Date(),
-      key: "selection",
+      key: 'selection',
     },
   ]);
   const [openOptions, setOpenOptions] = useState(false);
@@ -38,13 +45,17 @@ const   Header = ({ type }) => {
     setOptions((prev) => {
       return {
         ...prev,
-        [name]: operation === "i" ? options[name] + 1 : options[name] - 1,
+        [name]: operation === 'i' ? options[name] + 1 : options[name] - 1,
       };
     });
   };
 
   const handleSearch = () => {
-    navigate("/hotels", { state: { destination, date, options } });
+    dispatch({
+      type: ACTION_TYPES.NEW_SEARCH,
+      payload: { destination, dates, options },
+    });
+    navigate('/hotels', { state: { destination, dates, options } });
   };
 
   return (
@@ -99,16 +110,16 @@ const   Header = ({ type }) => {
                 <span
                   onClick={() => setOpenDate(!openDate)}
                   className="headerSearchText"
-                >{`${format(date[0].startDate, 'MM/dd/yyyy')} to ${format(
-                  date[0].endDate,
+                >{`${format(dates[0].startDate, 'MM/dd/yyyy')} to ${format(
+                  dates[0].endDate,
                   'MM/dd/yyyy'
                 )}`}</span>
                 {openDate && (
                   <DateRange
                     editableDateInputs={true}
-                    onChange={(item) => setDate([item.selection])}
+                    onChange={(item) => setDates([item.selection])}
                     moveRangeOnFirstSelection={false}
-                    ranges={date}
+                    ranges={dates}
                     className="date"
                     minDate={new Date()}
                   />

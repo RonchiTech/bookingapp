@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useState, useContext, useCallback } from 'react';
 import { useLocation } from 'react-router-dom';
 import useFetch from '../../hooks/useFetch';
+import { SearchContext } from '../../context/searchContext';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -20,15 +21,36 @@ import { useEffect } from 'react';
 
 const Hotel = () => {
   const location = useLocation();
+  const { city, dates, options } = useContext(SearchContext);
+
   const hotelId = location.pathname.split('/')[2];
   const [slideNumber, setSlideNumber] = useState(0);
   const [open, setOpen] = useState(false);
+
   const [data, loading, error, reFetch] = useFetch(
     `http://localhost:3000/api/v1/hotels/${hotelId}`
   );
-  useEffect(() => {
-    console.log(data);
-  }, [data]);
+
+  const MILLISECONDS_PER_DAY = 1000 * 60 * 60 * 24;
+
+  const timeDifference = useCallback(
+    (date1, date2) => {
+      // console.log(firstDay, lastDay);
+      // console.log(firstDay.getTime(), lastDay.getTime());
+      const timeDiff = Math.abs(date1.getTime() - date2.getTime());
+      // console.log(timeDiff, MILLISECONDS_PER_DAY);
+      const daysDiff = Math.ceil(timeDiff / MILLISECONDS_PER_DAY);
+      return daysDiff;
+    },
+    [MILLISECONDS_PER_DAY]
+  );
+
+  // useEffect(() => {
+  //   console.log('data', data);
+  //   console.log('dates', dates);
+  //   console.log(timeDifference(dates[0].endDate, dates[0].startDate));
+  // }, [data, dates, timeDifference]);
+
   // const photos = [
   //   {
   //     src: 'https://cf.bstatic.com/xdata/images/hotel/max1280x900/261707778.jpg?k=56ba0babbcbbfeb3d3e911728831dcbc390ed2cb16c51d88159f82bf751d04c6&o=&hp=1',
@@ -49,7 +71,7 @@ const Hotel = () => {
   //     src: 'https://cf.bstatic.com/xdata/images/hotel/max1280x900/261707389.jpg?k=52156673f9eb6d5d99d3eed9386491a0465ce6f3b995f005ac71abc192dd5827&o=&hp=1',
   //   },
   // ];
-
+  const days = timeDifference(dates[0].endDate, dates[0].startDate) || 1;
   const handleOpen = (i) => {
     setSlideNumber(i);
     setOpen(true);
@@ -117,7 +139,7 @@ const Hotel = () => {
                 and get a free airport taxi
               </span>
               {data.hotel.photos.length && (
-               <div className="hotelImages">
+                <div className="hotelImages">
                   {data.hotel.photos.map((photo, i) => (
                     <div className="hotelImgWrapper" key={i}>
                       <img
@@ -136,13 +158,13 @@ const Hotel = () => {
                   <p className="hotelDesc">{data.hotel.description}</p>
                 </div>
                 <div className="hotelDetailsPrice">
-                  <h1>Perfect for a 9-night stay!</h1>
+                  <h1>Perfect for a {days}-night stay!</h1>
                   <span>
                     Located in the real heart of Krakow, this property has an
                     excellent location score of 9.8!
                   </span>
                   <h2>
-                    <b>$945</b> (9 nights)
+                    <b>${data.hotel.cheapestPrice * days * options.room}</b> ({days} nights)
                   </h2>
                   <button>Reserve or Book Now!</button>
                 </div>
