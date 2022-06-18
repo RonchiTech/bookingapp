@@ -46,6 +46,5 @@ export const AuthProvider = ({ children }) => {
   }, [user]);
 
   const value = { user, loading, error, dispatch };
-  console.log('values', value);
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

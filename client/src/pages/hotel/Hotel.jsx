@@ -1,5 +1,5 @@
 import { useState, useContext, useCallback } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import useFetch from '../../hooks/useFetch';
 import { SearchContext } from '../../context/searchContext';
 
@@ -18,12 +18,16 @@ import Footer from '../../components/footer/Footer';
 
 import './hotel.css';
 
-
 const Hotel = () => {
+  const MILLISECONDS_PER_DAY = 1000 * 60 * 60 * 24;
+
   const location = useLocation();
-  const { city, dates, options } = useContext(SearchContext);
+  const navigate = useNavigate();
+
+  const { user, city, dates, options } = useContext(SearchContext);
 
   const hotelId = location.pathname.split('/')[2];
+
   const [slideNumber, setSlideNumber] = useState(0);
   const [open, setOpen] = useState(false);
 
@@ -31,10 +35,11 @@ const Hotel = () => {
     `http://localhost:3000/api/v1/hotels/${hotelId}`
   );
 
-  const MILLISECONDS_PER_DAY = 1000 * 60 * 60 * 24;
-
   const timeDifference = useCallback(
     (date1, date2) => {
+      if (!date1 || !date2) {
+        return 1;
+      }
       // console.log(firstDay, lastDay);
       // console.log(firstDay.getTime(), lastDay.getTime());
       const timeDiff = Math.abs(date1.getTime() - date2.getTime());
@@ -71,7 +76,8 @@ const Hotel = () => {
   //     src: 'https://cf.bstatic.com/xdata/images/hotel/max1280x900/261707389.jpg?k=52156673f9eb6d5d99d3eed9386491a0465ce6f3b995f005ac71abc192dd5827&o=&hp=1',
   //   },
   // ];
-  const days = timeDifference(dates[0].endDate, dates[0].startDate) || 1;
+  const days = timeDifference(dates[0]?.endDate, dates[0]?.startDate) || 1;
+
   const handleOpen = (i) => {
     setSlideNumber(i);
     setOpen(true);
@@ -87,6 +93,13 @@ const Hotel = () => {
     }
 
     setSlideNumber(newSlideNumber);
+  };
+
+  const onButtonClick = () => {
+    if (user) {
+      return navigate('/');
+    }
+    return navigate('/login');
   };
 
   return (
@@ -125,11 +138,16 @@ const Hotel = () => {
               </div>
             )}
             <div className="hotelWrapper">
-              <button className="bookNow">Reserve or Book Now!</button>
-              <h1 className="hotelTitle">{data.hotel.title}</h1>
+              <button className="bookNow" onClick={onButtonClick}>
+                Reserve or Book Now!
+              </button>
+              <h1 className="hotelTitle">{data.hotel.name}</h1>
               <div className="hotelAddress">
                 <FontAwesomeIcon icon={faLocationDot} />
-                <span>{data.hotel.address}</span>
+                <span>
+                  {data.hotel.address},{' '}
+                  <strong>{data.hotel.city.toUpperCase()}</strong>
+                </span>
               </div>
               <span className="hotelDistance">
                 Excellent location – {data.hotel.distance}m from center
@@ -138,13 +156,13 @@ const Hotel = () => {
                 Book a stay over ${data.hotel.cheapestPrice} at this property
                 and get a free airport taxi
               </span>
-              {data.hotel.photos.length && (
+              {data.hotel.photos && (
                 <div className="hotelImages">
                   {data.hotel.photos.map((photo, i) => (
                     <div className="hotelImgWrapper" key={i}>
                       <img
                         onClick={() => handleOpen(i)}
-                        src={photo.src}
+                        src={photo}
                         alt=""
                         className="hotelImg"
                       />
@@ -164,9 +182,10 @@ const Hotel = () => {
                     excellent location score of 9.8!
                   </span>
                   <h2>
-                    <b>${data.hotel.cheapestPrice * days * options.room}</b> ({days} nights)
+                    <b>${data.hotel.cheapestPrice * days * options?.room}</b>(
+                    {days} {days > 1 ? 'nights' : 'night'})
                   </h2>
-                  <button>Reserve or Book Now!</button>
+                  <button onClick={onButtonClick}>Reserve or Book Now!</button>
                 </div>
               </div>
             </div>

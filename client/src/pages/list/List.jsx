@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import useFetch from '../../hooks/useFetch';
 import { useLocation } from 'react-router-dom';
 import { DateRange } from 'react-date-range';
@@ -7,38 +7,53 @@ import Navbar from '../../components/navbar/Navbar';
 import Header from '../../components/header/Header';
 import SearchItem from '../../components/searchItem/SearchItem';
 import './list.css';
+import { ACTION_TYPES, SearchContext } from '../../context/searchContext';
 
 const List = () => {
   const location = useLocation();
-  const [destination, setDestination] = useState(
-    location?.state?.destination ?? ''
-  );
-  const [dates, setDates] = useState(
-    location?.state?.dates ?? [
-      {
-        startDate: new Date(),
-        endDate: new Date(),
-        key: 'selection',
-      },
-    ]
-  );
-  const [openDate, setOpenDate] = useState(false);
-  const [options, setOptions] = useState(
-    location?.state?.options ?? {
-      adult: 1,
-      children: 0,
-      room: 1,
-    }
-  );
+  const { destination, dispatch, dates, openDate, options } =
+    useContext(SearchContext);
+
+  const onSetOpenDate = () => {
+    dispatch({ type: ACTION_TYPES.OPEN_DATE, payload: !openDate });
+  };
+
+  const onSetDates = (item) => {
+    console.log(item);
+    dispatch({ type: ACTION_TYPES.SET_DATE, payload: [item.selection] });
+  };
+  // const [destination, setDestination] = useState(
+  //   location?.state?.destination ?? ''
+  // );
+  // const [dates, setDates] = useState(
+  //   location?.state?.dates ?? [
+  //     {
+  //       startDate: new Date(),
+  //       endDate: new Date(),
+  //       key: 'selection',
+  //     },
+  //   ]
+  // );
+  // const [openDate, setOpenDate] = useState(false);
+  // const [options, setOptions] = useState(
+  //   location?.state?.options ?? {
+  //     adult: 1,
+  //     children: 0,
+  //     room: 1,
+  //   }
+  // );
   const [minValue, setMinValue] = useState(null);
   const [maxValue, setMaxValue] = useState(null);
 
   const url = `http://localhost:3000/api/v1/hotels?${
-    destination && 'city=' + destination}&min=${minValue || 1}&max=${maxValue || 9999}`;
+    destination && 'city=' + destination
+  }&min=${minValue || 1}&max=${maxValue || 9999}`;
 
   const [data, loading, error, reFetch] = useFetch(url);
+
   const setNewDestination = (e) => {
-    setDestination(e.target.value);
+    // setDestination(e.target.value);
+    dispatch({ type: ACTION_TYPES.SET_DESTINATION, payload: e.target.value });
   };
   const setMinValueHandler = (e) => {
     setMinValue(Number(e.target.value));
@@ -50,6 +65,15 @@ const List = () => {
     console.log(minValue, maxValue);
     reFetch();
   };
+  const onRoomChange = (e) => {
+    // console.log(e.target.value);
+    // console.log(options);
+    dispatch({
+      type: ACTION_TYPES.SET_OPTIONS,
+      payload: { ...options, room: e.target.value },
+    });
+  };
+
   return (
     <div>
       <Navbar />
@@ -68,13 +92,13 @@ const List = () => {
             </div>
             <div className="lsItem">
               <label>Check-in Date</label>
-              <span onClick={() => setOpenDate(!openDate)}>{`${format(
+              <span onClick={onSetOpenDate}>{`${format(
                 dates[0].startDate,
                 'MM/dd/yyyy'
               )} to ${format(dates[0].endDate, 'MM/dd/yyyy')}`}</span>
               {openDate && (
                 <DateRange
-                  onChange={(item) => setDates([item.selection])}
+                  onChange={onSetDates}
                   minDate={new Date()}
                   ranges={dates}
                 />
@@ -128,6 +152,7 @@ const List = () => {
                     min={1}
                     className="lsOptionInput"
                     placeholder={options.room}
+                    onChange={onRoomChange}
                   />
                 </div>
               </div>

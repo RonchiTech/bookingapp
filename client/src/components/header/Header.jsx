@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react';
+import { useContext } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 
 import { format } from 'date-fns';
@@ -23,32 +23,38 @@ import 'react-date-range/dist/theme/default.css'; // theme css file
 import { AuthContext } from '../../context/authContext';
 
 const Header = ({ type }) => {
-  const { dispatch } = useContext(SearchContext);
-  const [destination, setDestination] = useState('');
-  const [openDate, setOpenDate] = useState(false);
-  const [dates, setDates] = useState([
-    {
-      startDate: new Date(),
-      endDate: new Date(),
-      key: 'selection',
-    },
-  ]);
-  const [openOptions, setOpenOptions] = useState(false);
-  const [options, setOptions] = useState({
-    adult: 1,
-    children: 0,
-    room: 1,
-  });
+  const { dispatch, openDate, destination, dates, options, openOptions } =
+    useContext(SearchContext);
+  // const [destination, setDestination] = useState('');
+  // const [openDate, setOpenDate] = useState(false);
+  // const [dates, setDates] = useState([
+  //   {
+  //     startDate: new Date(),
+  //     endDate: new Date(),
+  //     key: 'selection',
+  //   },
+  // ]);
+  // const [openOptions, setOpenOptions] = useState(false);
+  // const [options, setOptions] = useState({
+  //   adult: 1,
+  //   children: 0,
+  //   room: 1,
+  // });
 
   const navigate = useNavigate();
   const { user } = useContext(AuthContext);
   const handleOption = (name, operation) => {
-    setOptions((prev) => {
-      return {
-        ...prev,
-        [name]: operation === 'i' ? options[name] + 1 : options[name] - 1,
-      };
-    });
+    const newOption = {
+      ...options,
+      [name]: operation === 'i' ? options[name] + 1 : options[name] - 1,
+    };
+    dispatch({ type: ACTION_TYPES.SET_OPTIONS, payload: newOption });
+    // setOptions((prev) => {
+    //   return {
+    //     ...prev,
+    //     [name]: operation === 'i' ? options[name] + 1 : options[name] - 1,
+    //   };
+    // });
   };
 
   const handleSearch = () => {
@@ -58,7 +64,19 @@ const Header = ({ type }) => {
     });
     navigate('/hotels', { state: { destination, dates, options } });
   };
-
+  const onSetOpenDate = () => {
+    dispatch({ type: ACTION_TYPES.OPEN_DATE, payload: !openDate });
+  };
+  const onSetDestination = (e) => {
+    dispatch({ type: ACTION_TYPES.SET_DESTINATION, payload: e.target.value });
+  };
+  const onSetDates = (item) => {
+    console.log(item);
+    dispatch({ type: ACTION_TYPES.SET_DATE, payload: [item.selection] });
+  };
+  const onOpenOptions = () => {
+    dispatch({ type: ACTION_TYPES.OPEN_OPTIONS, payload: !openOptions });
+  };
   return (
     <div className="header">
       <div
@@ -109,13 +127,13 @@ const Header = ({ type }) => {
                   type="text"
                   placeholder="Where are you going?"
                   className="headerSearchInput"
-                  onChange={(e) => setDestination(e.target.value)}
+                  onChange={onSetDestination}
                 />
               </div>
               <div className="headerSearchItem">
                 <FontAwesomeIcon icon={faCalendarDays} className="headerIcon" />
                 <span
-                  onClick={() => setOpenDate(!openDate)}
+                  onClick={onSetOpenDate}
                   className="headerSearchText"
                 >{`${format(dates[0].startDate, 'MM/dd/yyyy')} to ${format(
                   dates[0].endDate,
@@ -124,7 +142,8 @@ const Header = ({ type }) => {
                 {openDate && (
                   <DateRange
                     editableDateInputs={true}
-                    onChange={(item) => setDates([item.selection])}
+                    // onChange={(item) => setDates([item.selection])}
+                    onChange={onSetDates}
                     moveRangeOnFirstSelection={false}
                     ranges={dates}
                     className="date"
@@ -135,7 +154,7 @@ const Header = ({ type }) => {
               <div className="headerSearchItem">
                 <FontAwesomeIcon icon={faPerson} className="headerIcon" />
                 <span
-                  onClick={() => setOpenOptions(!openOptions)}
+                  onClick={onOpenOptions}
                   className="headerSearchText"
                 >{`${options.adult} adult · ${options.children} children · ${options.room} room`}</span>
                 {openOptions && (

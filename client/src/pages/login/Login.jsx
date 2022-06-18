@@ -13,7 +13,7 @@ const Login = () => {
   const { user, error, loading, dispatch } = useContext(AuthContext);
 
   useEffect(() => {
-    if (user.email && user.username) {
+    if (user?.email && user?.username) {
       navigate('/');
     }
   }, [navigate, user]);
