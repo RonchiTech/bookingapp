@@ -1,4 +1,5 @@
 const Hotel = require('../models/hotel.model');
+const Room = require('../models/room.model');
 const { createError } = require('../utils/error');
 
 async function getAllHotel(req, res, next) {
@@ -7,11 +8,11 @@ async function getAllHotel(req, res, next) {
   try {
     const hotels = await Hotel.find({
       ...others,
-      cheapestPrice: { $gte: min || 1, $lte: max || 9999},
+      cheapestPrice: { $gte: min || 1, $lte: max || 9999 },
     }).limit(limit);
     if (!hotels || !hotels.length) {
       return next(createError(404, 'No Hotels Found!'));
-    // return res.status(200).json({ message: 'No Hotels found!', hotels });
+      // return res.status(200).json({ message: 'No Hotels found!', hotels });
     }
     return res.status(200).json({ message: 'Hotesl found!', hotels });
   } catch (err) {
@@ -81,7 +82,7 @@ async function countByCity(req, res, next) {
   const cities = req.query.cities.split(',');
   // console.log('Cities', cities);
   try {
-    const list = [];
+    // const list = [];
     // const list = await Promise.all(
     //   cities.map((city) => {
     //     return Hotel.countDocuments({ city: city }) ;
@@ -124,6 +125,21 @@ async function countByType(req, res, next) {
   }
 }
 
+async function getHotelRooms(req, res, next) {
+  try {
+    const hotel = await Hotel.findById(req.params.hotelId);
+    const roomList = await Promise.all(
+      hotel.rooms.map((room) => {
+        // console.log(room);
+        return Room.findById(room);
+      })
+    );
+    return res.status(200).json({ hotel, roomList });
+  } catch (err) {
+    next(err);
+  }
+}
+
 module.exports = {
   postHotel,
   updateHotel,
@@ -132,4 +148,5 @@ module.exports = {
   getAllHotel,
   countByCity,
   countByType,
+  getHotelRooms,
 };

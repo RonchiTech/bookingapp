@@ -8,10 +8,10 @@ const {
   getAllHotel,
   countByCity,
   countByType,
+  getHotelRooms,
 } = require('../../controllers/hotel.controller');
 
 const routes = express.Router();
-
 
 //GET City Count
 routes.get('/countByCity', countByCity);
@@ -19,6 +19,8 @@ routes.get('/countByCity', countByCity);
 // GET Property Count
 routes.get('/countByType', countByType);
 
+//Get Hotel Rooms
+routes.get('/rooms/:hotelId', getHotelRooms);
 
 //GET ALL Hotel
 routes.get('/', getAllHotel);
@@ -34,8 +36,5 @@ routes.put('/:hotelId', verifyToken, verifyAdmin, updateHotel);
 
 //Delete Hotel
 routes.delete('/:hotelId', verifyToken, verifyAdmin, deleteHotel);
-
-
-
 
 module.exports = routes;
