@@ -1,7 +1,15 @@
 import { useState, useContext, useCallback } from 'react';
+import { createPortal } from 'react-dom';
 import { useLocation, useNavigate } from 'react-router-dom';
+
 import useFetch from '../../hooks/useFetch';
 import { SearchContext } from '../../context/searchContext';
+
+import Navbar from '../../components/navbar/Navbar';
+import Header from '../../components/header/Header';
+import MailList from '../../components/mailList/MailList';
+import Footer from '../../components/footer/Footer';
+import Modal from '../../components/modal/Modal';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -11,12 +19,8 @@ import {
   faLocationDot,
 } from '@fortawesome/free-solid-svg-icons';
 
-import Navbar from '../../components/navbar/Navbar';
-import Header from '../../components/header/Header';
-import MailList from '../../components/mailList/MailList';
-import Footer from '../../components/footer/Footer';
-
 import './hotel.css';
+import { AuthContext } from '../../context/authContext';
 
 const Hotel = () => {
   const MILLISECONDS_PER_DAY = 1000 * 60 * 60 * 24;
@@ -24,12 +28,14 @@ const Hotel = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const { user, city, dates, options } = useContext(SearchContext);
-
+  const { city, dates, options } = useContext(SearchContext);
+  const { user } = useContext(AuthContext);
+  console.log(user);
   const hotelId = location.pathname.split('/')[2];
 
   const [slideNumber, setSlideNumber] = useState(0);
   const [open, setOpen] = useState(false);
+  const [openModal, setOpenModal] = useState(false);
 
   const [data, loading, error, reFetch] = useFetch(
     `http://localhost:3000/api/v1/hotels/${hotelId}`
@@ -97,9 +103,10 @@ const Hotel = () => {
 
   const onButtonClick = () => {
     if (user) {
-      return navigate('/');
+      setOpenModal(true);
+    } else {
+      navigate('/login');
     }
-    return navigate('/login');
   };
 
   return (
@@ -194,6 +201,11 @@ const Hotel = () => {
           </div>
         )
       )}
+      {openModal &&
+        createPortal(
+          <Modal setOpenModal={setOpenModal} hotelId={hotelId} />,
+          document.getElementById('portal')
+        )}
     </div>
   );
 };
