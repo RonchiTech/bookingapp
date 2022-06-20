@@ -8,7 +8,7 @@ async function createRoom(req, res, next) {
   try {
     const savedRoom = await newRoom.save();
     await Hotel.findByIdAndUpdate(hotelId, {
-      $push: { rooms: savedRoom.id },
+      $push: { rooms: savedRoom._id },
     });
     return res
       .status(201)
@@ -25,6 +25,21 @@ async function updateRoom(req, res, next) {
       roomId,
       { $set: req.body },
       { new: true }
+    );
+    return res
+      .status(200)
+      .json({ message: 'Room updated successfully!', room: updatedRoom });
+  } catch (err) {
+    console.log(err);
+    next(err);
+  }
+}
+async function updateRoomAvailability(req, res, next) {
+  const { roomId } = req.params;
+  try {
+    const updatedRoom = await Room.updateOne(
+      { 'roomNumbers._id': roomId },
+      { $addToSet: { 'roomNumbers.$.unavailableDate': req.body.dates } }
     );
     return res
       .status(200)
@@ -61,4 +76,10 @@ async function getRoom(req, res, next) {
   }
 }
 
-module.exports = { createRoom, updateRoom, deleteRoom, getRoom };
+module.exports = {
+  createRoom,
+  updateRoom,
+  deleteRoom,
+  getRoom,
+  updateRoomAvailability,
+};

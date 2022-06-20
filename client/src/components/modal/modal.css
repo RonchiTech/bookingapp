@@ -1,47 +1,87 @@
-.modal-container {
+.reserve {
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.418);
   position: fixed;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.7);
-  z-index: 10;
   display: flex;
   align-items: center;
   justify-content: center;
+  z-index: 1000;
 }
 
-.modal {
-  background: #fff;
-  width: 80vw;
-  max-width: 400px;
-  border-radius: 10px;
-  padding: 2rem 1rem;
-  text-align: center;
+.rContainer {
+  background-color: white;
+  padding: 20px;
+  position: relative;
 }
-.modal h4 {
-  margin-bottom: 0;
-  line-height: 1.5;
+
+.rClose {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  cursor: pointer;
+  height: 25px;
+  width: auto;
+  z-index: 10000;
 }
-.modal .clear-btn,
-.modal .confirm-btn {
-  margin-top: 1rem;
-}
-.btn-container {
+
+.rItem {
   display: flex;
-  justify-content: space-around;
+  align-items: center;
+  gap: 50px;
+  padding: 20px;
 }
 
-.clear-btn {
-  background: transparent;
-  padding: 0.5rem 1rem;
-  color: #751919;
-  border: 1px solid #751919;
-  margin-top: 2.25rem;
-  border-radius: 5px;
+.rInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  width: 70%;
 }
-.clear-btn:hover {
-  background: #f36b6b;
-  color: #751919;
-  border-color: #e58282;
+
+.rTitle {
+  font-weight: 500;
+}
+
+.rDesc {
+  font-weight: 300;
+}
+
+.rMax {
+  font-size: 12px;
+}
+
+.rPrice {
+  font-weight: 500;
+}
+
+.rSelectRooms {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  font-size: 8px;
+  color: gray;
+}
+
+.room {
+  display: flex;
+  flex-direction: column;
+}
+
+.rButton {
+  border: none;
+  padding: 10px 20px;
+  background-color: #0071c2;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  border-radius: 5px;
+  width: 100%;
+  margin-top: 20px;
+}
+
+.--disable {
+  cursor: not-allowed;
 }

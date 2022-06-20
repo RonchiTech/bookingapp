@@ -30,7 +30,7 @@ const Hotel = () => {
 
   const { city, dates, options } = useContext(SearchContext);
   const { user } = useContext(AuthContext);
-  console.log(user);
+
   const hotelId = location.pathname.split('/')[2];
 
   const [slideNumber, setSlideNumber] = useState(0);

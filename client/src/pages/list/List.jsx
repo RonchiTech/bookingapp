@@ -17,7 +17,9 @@ const List = () => {
   const onSetOpenDate = () => {
     dispatch({ type: ACTION_TYPES.OPEN_DATE, payload: !openDate });
   };
-
+  useEffect(() => {
+    console.log(dates);
+  }, [dates]);
   const onSetDates = (item) => {
     console.log(item);
     dispatch({ type: ACTION_TYPES.SET_DATE, payload: [item.selection] });
